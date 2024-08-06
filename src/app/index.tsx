@@ -1,5 +1,4 @@
-import React from 'react'
-import { Image, StyleSheet, Platform, TextInput, TouchableOpacity, ActivityIndicator, View, Modal, KeyboardAvoidingView, Text} from 'react-native';
+import { StyleSheet, Platform, TextInput, TouchableOpacity, ActivityIndicator, View, Modal, KeyboardAvoidingView, Text} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useState } from 'react';
 
