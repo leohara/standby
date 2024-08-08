@@ -1,4 +1,4 @@
-import { getAIResponse } from './app/apiClient';
+import { getAIResponse } from './app/apiClient.js';
 
 const userProfile = {
   name: 'Taro',
@@ -7,9 +7,9 @@ const userProfile = {
 };
 
 getAIResponse(userProfile)
-  .then((response: string) => {
+  .then(response => {
     console.log(`AI Response: ${response}`);
   })
-  .catch((error: any) => {
+  .catch(error => {
     console.error('Error fetching AI response:', error);
   });
