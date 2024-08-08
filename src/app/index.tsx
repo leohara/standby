@@ -1,7 +1,7 @@
 import { StyleSheet, Platform, TextInput, TouchableOpacity, ActivityIndicator, View, Modal, KeyboardAvoidingView, Text} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useState } from 'react';
-
+import { getAIResponse } from './apiClient.ts';
 
 interface Task {
   id: string;
@@ -222,3 +222,17 @@ const styles = StyleSheet.create({
   }
 
 });
+
+const userProfile = {
+  name: 'Taro',
+  relationshipDuration: '2 years 3 months',
+  mood: 'happy',
+};
+
+getAIResponse(userProfile)
+  .then(response => {
+    console.log(`AI Response: ${response}`);
+  })
+  .catch(error => {
+    console.error('Error fetching AI response:', error);
+  });
