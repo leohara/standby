@@ -1,21 +1,19 @@
 import { StyleSheet, Platform, TextInput, TouchableOpacity, ActivityIndicator, View, Modal, KeyboardAvoidingView, Text} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useState } from 'react';
-import { getAIResponse } from './apiClient.ts';
+// import { getAIResponse } from './utils/apiClient';
 
 interface Task {
   id: string;
   text: string;
 }
 
-export default function HomeScreen() {
+export default function Chat() {
   const [messageText, setMessageText] = useState("");
   const [message, setMessage] = useState("");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-
-
 
   const handleSendMessage = () => {
     setModalVisible(true);
@@ -37,41 +35,59 @@ export default function HomeScreen() {
     setModalVisible(false);
   };
 
-
   return (
     <>
       <KeyboardAvoidingView 
-        style={styles.container} 
+        className="flex-1 p-10"
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-          {/* ばつ印のボタンを左上に配置 */}
-        <TouchableOpacity style={styles.closeButton}>
+        <TouchableOpacity
+          className="absolute top-10 left-5 z-10"
+        >
           <Icon name="close" size={24} color="#000" />
         </TouchableOpacity>
 
-        <View style={styles.response}>
-          {loading ? (<ActivityIndicator size="large" color="#0000ff" />) 
-          : (<Text style={styles.responseText}>{response}</Text>)}
+        <View
+          className="flex-row justify-center items-center p-24 bg-cyan-500 rounded-[50px]"
+        >
+          {loading ?
+            (<ActivityIndicator size="large" color="#0000ff" />)
+            :
+            (
+              <Text
+                className="text-center text-black flex-1 text-2xl"
+              >
+                {response}
+              </Text>)}
         </View>
 
-        <View style={styles.selfMassage}>
-          <Text style={styles.selfMessageText}>{message}</Text>
+        <View className="flex-row justify-between items-center p-24 bg-[#FF00FF] rounded-[50px]">
+          <Text className="text-black text-center flex-1 text-3xl">
+            {message}
+          </Text>
         </View>
 
-        <View style={styles.container}>
-          <View style={styles.inputContainer}>
+        <View className="flex-1 p-10">
+          <View className="flex-row items-center border border-[#ccceee] rounded-full p-1.5 bg-white">
             <TextInput 
               placeholder='コメントを入力' 
-              style={styles.input}
+              className="flex-1 text-black p-2.5"
               onChangeText={setMessageText}
               value={messageText}
               maxLength={100} // 文字数制限
             />
-            <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage}>
+            <TouchableOpacity
+              className="bg-blue-500 p-2.5 rounded-full ml-2.5 flex justify-center items-center"
+              onPress={handleSendMessage}
+            >
               <Icon name="arrow-upward" color="#fff" />
             </TouchableOpacity>
           </View>
-          <Text style={styles.charCount}>{messageText.length} / 100</Text>
+          <Text
+            className="text-white text-right mt-1"
+          >
+            {messageText.length} / 100
+          </Text>
         </View>
 
         <Modal
@@ -82,15 +98,29 @@ export default function HomeScreen() {
             setModalVisible(!modalVisible);
           }} // Android用に必要らしい、よくわからん
         >
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>本当にこの内容で送信しますか？</Text>
-            <Text style={styles.modalMessageText}>{messageText}</Text>
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity style={styles.modalButton} onPress={confirmSendMessage}>
-                <Text style={styles.modalButtonText}>はい</Text>
+          <View className="flex-1 justify-center items-center m-5 bg-white rounded-lg p-8 shadow-lg">
+            <Text className="mb-4 text-center text-xl font-bold text-black">
+              本当にこの内容で送信しますか？
+            </Text>
+            <Text className="mb-5 text-center text-base text-black">
+              {messageText}
+            </Text>
+            <View className="flex-row justify-between">
+              <TouchableOpacity
+                className="bg-blue-500 rounded-lg p-2.5 mx-2.5"
+                onPress={confirmSendMessage}
+              >
+                <Text className="text-white font-bold text-center">
+                  はい
+                </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton} onPress={cancelSendMessage}>
-                <Text style={styles.modalButtonText}>いいえ</Text>
+              <TouchableOpacity
+                className="bg-blue-500 rounded-lg p-2.5 mx-2.5"
+                onPress={cancelSendMessage}
+              >
+                <Text className="text-white font-bold text-center">
+                  いいえ
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -101,138 +131,16 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 40,
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 40,
-    left: 20,
-    zIndex: 10,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderColor: "#ccceee",
-    borderWidth: 1,
-    borderRadius: 25, 
-    padding: 5,
-    backgroundColor: '#fff', 
-  },
-  input: {
-    flex: 1,
-    color: "#000", 
-    padding: 10,
-  },
-  sendButton: {
-    backgroundColor: "#007BFF",
-    padding: 10,
-    borderRadius: 50,
-    marginLeft: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  sendButtonText: {
-    color: "#fff",
-  },
-  response: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    padding:100,
-    backgroundColor: "#00FFFF",
-    borderRadius: 50,
-  },
-  responseText: {
-    color: "black",
-    textAlign: "center",
-    flex: 1,
-    fontSize: 30,
-  },
-  selfMassage: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 100,
-    backgroundColor: "#FF00FF",
-    borderRadius: 50,
-  },
-  selfMessageText: {
-    color: "black",
-    textAlign: "center",
-    flex: 1,
-    fontSize: 30,
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    backgroundColor: "#eeeeee"
-  },
-  modalView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: "black",
-  },
-  modalMessageText: {
-    marginBottom: 20,
-    textAlign: 'center',
-    fontSize: 16,
-    color: "black",
-  },
-  modalButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  modalButton: {
-    backgroundColor: '#2196F3',
-    borderRadius: 10,
-    padding: 10,
-    marginHorizontal: 10,
-  },
-  modalButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  charCount: {
-    color: "white",
-    textAlign: 'right',
-    marginTop: 5,
-    marginRight: 10,
-  }
+// const userProfile = {
+//   name: 'Taro',
+//   relationshipDuration: '2 years 3 months',
+//   mood: 'happy',
+// };
 
-});
-
-const userProfile = {
-  name: 'Taro',
-  relationshipDuration: '2 years 3 months',
-  mood: 'happy',
-};
-
-getAIResponse(userProfile)
-  .then(response => {
-    console.log(`AI Response: ${response}`);
-  })
-  .catch(error => {
-    console.error('Error fetching AI response:', error);
-  });
+// getAIResponse(userProfile)
+//   .then(response => {
+//     console.log(`AI Response: ${response}`);
+//   })
+//   .catch(error => {
+//     console.error('Error fetching AI response:', error);
+//   });
